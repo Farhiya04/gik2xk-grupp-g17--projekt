@@ -28,7 +28,7 @@ const User = sequelize.define(
     },
   },
   {
-    underscored: true, // Skapar created_at och updated_at automatiskt [cite: 132-135]
+    underscored: true, // Skapar created_at och updated_at automatiskt
   },
 );
 

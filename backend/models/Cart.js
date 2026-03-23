@@ -11,7 +11,7 @@ const Cart = sequelize.define(
     },
     payed: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false, // Standard är att den inte är betald från början
+      defaultValue: false,
     },
   },
   {
