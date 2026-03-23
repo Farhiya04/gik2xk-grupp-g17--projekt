@@ -96,16 +96,46 @@ function ProductList() {
               <h2>{product.title}</h2>
               <p className="price">{product.price} kr</p>
 
-              <div className="card-buttons">
-                <Link to={`/product/${product.id}`} className="detail-button">
-                  Detaljer
-                </Link>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginTop: "15px",
+                }}
+              >
+                {/* Stor, bred köp-knapp */}
                 <button
                   onClick={() => addToCart(product.id)}
-                  className="buy-button"
+                  style={{
+                    width: "100%", // Gör knappen lika bred som kortet
+                    padding: "12px",
+                    backgroundColor: "#f03262", // Rosa/Röd färg för att synas tydligt
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "1.1rem",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                  }}
                 >
                   Köp 🛒
                 </button>
+
+                {/* Diskret länk för detaljer under knappen */}
+                <Link
+                  to={`/product/${product.id}`}
+                  style={{
+                    color: "#666", // Diskret grå färg
+                    textDecoration: "underline",
+                    fontSize: "0.95rem",
+                    marginTop: "5px",
+                  }}
+                >
+                  Läs mer om smaken
+                </Link>
               </div>
             </div>
           ))
