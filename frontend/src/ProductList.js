@@ -113,7 +113,9 @@ function ProductList() {
             outline: "none",
           }}
         >
-          <option value="default">Sortera efter...</option>
+          <option value="hidden" disabled>
+            Sortera efter...
+          </option>
           <option value="lowestPrice">Lägsta pris </option>
           <option value="highestPrice">Högsta pris </option>
         </select>
