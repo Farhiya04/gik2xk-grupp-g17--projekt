@@ -3,66 +3,117 @@ import { Link } from "react-router-dom";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
-  const [message, setMessage] = useState(""); // För feedback
+  const [searchTerm, setSearchTerm] = useState("");
+  const [notification, setNotification] = useState(""); // Den håller koll på det meddelandet
 
   useEffect(() => {
     fetch("http://localhost:5000/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
-      .catch((error) => console.error("Fel vid hämtning:", error));
+      .catch((err) => console.error("Kunde inte hämta produkter:", err));
   }, []);
 
-  // Funktion för att lägga till direkt i korgen
-  const addToCartDirect = (productId, title) => {
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const addToCart = (productId) => {
     fetch("http://localhost:5000/carts/1/addProduct", {
-      // Vi använder User ID 1
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productId: productId,
-        amount: 1,
-      }),
+      body: JSON.stringify({ productId: productId, amount: 1 }),
     })
-      .then((res) => res.json())
-      .then(() => {
-        setMessage(`${title} lades till i korgen! 🛒`);
-        setTimeout(() => setMessage(""), 2000); // Ta bort meddelandet efter 2 sekunder
+      .then((res) => {
+        if (!res.ok) {
+          console.error("Servern sa ifrån! Status:", res.status);
+        }
+
+        // Visa vår notis när man har lagt en vara i korgen
+        setNotification("Varan lades till i varukorgen! 🛒");
+
+        // Gömmer notisen automatiskt efter 3 sekunder
+        setTimeout(() => {
+          setNotification("");
+        }, 3000);
       })
-      .catch((err) => console.error("Kunde inte lägga till:", err));
+      .catch((err) => console.error("Gick inte att lägga till:", err));
   };
 
   return (
-    <main className="product-grid-container">
-      {/* Meddelande som dyker upp längst upp när man handlar */}
-      {message && <div className="cart-notification">{message}</div>}
+    <div className="home-container">
+      {/* DETTA ÄR NOTISEN PÅ SKÄRMEN */}
+      {notification && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#fad9ed",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+            zIndex: 1000,
+            fontWeight: "bold",
+          }}
+        >
+          {notification}
+        </div>
+      )}
 
-      <div className="product-grid">
-        {products.map((product) => (
-          <div key={product.id} className="product-card">
-            <img
-              src={`http://localhost:5000/images/${product.imageUrl}`}
-              alt={product.title}
-              className="product-image"
-            />
-            <h2>{product.title}</h2>
-            <span className="price">{product.price} kr</span>
-
-            {/* Ny grupp för att hålla knapparna brevid varandra */}
-            <div className="card-buttons">
-              <Link to={`/product/${product.id}`} className="detail-button">
-                Detaljer
-              </Link>
-              <button
-                className="buy-button"
-                onClick={() => addToCartDirect(product.id, product.title)}
-              >
-                Köp 🛒
-              </button>
-            </div>
-          </div>
-        ))}
+      {/* SÖKFÄLTET */}
+      <div
+        className="search-container"
+        style={{ margin: "20px auto", maxWidth: "500px" }}
+      >
+        <input
+          type="text"
+          placeholder="Sök efter en Red Bull..."
+          className="search-input"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "12px 20px",
+            borderRadius: "25px",
+            border: "2px solid #f8e8f2",
+            outline: "none",
+          }}
+        />
       </div>
-    </main>
+
+      {/* PRODUKTLISTAN */}
+      <div className="product-grid">
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
+            <div key={product.id} className="product-card">
+              <img
+                src={`http://localhost:5000/images/${product.imageUrl}`}
+                alt={product.title}
+                className="product-image"
+              />
+              <h2>{product.title}</h2>
+              <p className="price">{product.price} kr</p>
+
+              <div className="card-buttons">
+                <Link to={`/product/${product.id}`} className="detail-button">
+                  Detaljer
+                </Link>
+                <button
+                  onClick={() => addToCart(product.id)}
+                  className="buy-button"
+                >
+                  Köp 🛒
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>Inga produkter matchar din sökning... 🥤</p>
+        )}
+      </div>
+    </div>
   );
 }
 

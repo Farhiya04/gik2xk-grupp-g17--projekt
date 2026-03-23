@@ -84,7 +84,7 @@ function Admin() {
   // OM MAN ÄR INLOGGAD, VISA ADMIN-PANELEN
   return (
     <div className="admin-page" style={{ padding: "20px" }}>
-      <h1>Admin-panel 🛠️</h1>
+      <h1>Admin-panel </h1>
       <button
         onClick={() => setIsLoggedIn(false)}
         style={{ marginBottom: "20px" }}

@@ -11,8 +11,8 @@ function App() {
     <Router>
       <div className="App">
         <header className="App-header">
-          <h1>Red Bull Energy Shop ⚡</h1>
-          {/* NY STRUKTUR FÖR MENYN */}
+          <h1>Red Bull Energy⚡</h1>
+          {/*STRUKTUREN FÖR MENYN */}
           <nav className="main-nav">
             <Link to="/" className="nav-link center-link">
               Hem
@@ -22,7 +22,7 @@ function App() {
                 Varukorg 🛒
               </Link>
               <Link to="/admin" className="nav-link">
-                Admin ⚙️
+                Admin
               </Link>
             </div>
           </nav>

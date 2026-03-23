@@ -29,7 +29,7 @@ function Cart() {
     }).then(() => fetchCart());
   };
 
-  // Funktion för att helt ta bort en vara
+  // Funktionen för att helt ta bort en vara
   const removeItem = (productId) => {
     fetch(`http://localhost:5000/carts/${cart.id}/product/${productId}`, {
       method: "DELETE",

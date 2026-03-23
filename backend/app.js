@@ -3,7 +3,7 @@ const cors = require("cors");
 const path = require("path");
 const sequelize = require("./database");
 
-// Importera modellerna
+// Importerar
 const Product = require("./models/Product");
 const User = require("./models/User");
 const Rating = require("./models/Rating");
@@ -34,9 +34,9 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 const productRoutes = require("./routes/productRoutes");
 const userRoutes = require("./routes/userRoutes");
 const cartRoutes = require("./routes/cartRoutes");
-const ratingRoutes = require("./routes/ratingRoutes"); // Längst upp vid de andra require
+const ratingRoutes = require("./routes/ratingRoutes");
 
-// Använd alla routes (en gång per route)
+// Använder alla routes (en gång per route)
 app.use("/products", productRoutes);
 app.use("/users", userRoutes);
 app.use("/carts", cartRoutes);

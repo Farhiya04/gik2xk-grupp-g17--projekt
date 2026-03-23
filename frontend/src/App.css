@@ -1,4 +1,3 @@
-/* Grundinställningar */
 body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -48,7 +47,7 @@ body {
     }
   }
 
-  /* --- PRODUKTKORT & RUTNÄT --- */
+  /* PRODUKTKORT */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -133,4 +132,25 @@ body {
       }
     }
   }
-} /* Här slutar .App */
+  /* sökrutan */
+  .search-container {
+    margin: 20px auto;
+    max-width: 500px;
+    padding: 0 20px;
+
+    .search-input {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border: 2px solid #f8e8f2;
+      border-radius: 25px;
+      outline: none;
+      transition: border-color 0.3s;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+      &:focus {
+        border-color: #fbd9f9; /* Ändrar färg när man klickar i sökrutan */
+      }
+    }
+  }
+}

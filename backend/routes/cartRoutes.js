@@ -45,8 +45,6 @@ router.post("/:userId/addProduct", async (req, res) => {
   }
 });
 
-// DESSA TVÅ GÖR ATT KNAPPARNA FUNGERAR
-
 // Ändra antal (Plus/Minus)
 router.put("/:cartId/product/:productId", async (req, res) => {
   try {
@@ -69,7 +67,7 @@ router.put("/:cartId/product/:productId", async (req, res) => {
   }
 });
 
-// Ta bort produkt helt (Krysset)
+// Ta bort produkt helt
 router.delete("/:cartId/product/:productId", async (req, res) => {
   try {
     await CartRow.destroy({

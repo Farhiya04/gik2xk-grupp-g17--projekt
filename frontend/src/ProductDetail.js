@@ -8,7 +8,9 @@ function ProductDetail() {
   const [newRating, setNewRating] = useState(5);
   const [comment, setComment] = useState("");
   const [message, setMessage] = useState("");
-  const [cartMessage, setCartMessage] = useState("");
+
+  // Vår notis
+  const [notification, setNotification] = useState("");
 
   useEffect(() => {
     // Hämta produkten
@@ -24,7 +26,7 @@ function ProductDetail() {
       .catch((err) => console.error("Fel vid hämtning av betyg:", err));
   }, [id]);
 
-  // 1. BERÄKNA SNITTBETYG
+  // BERÄKNA SNITTBETYG
   const averageRating =
     ratings.length > 0
       ? (
@@ -32,7 +34,7 @@ function ProductDetail() {
         ).toFixed(1)
       : 0;
 
-  // 2. FUNKTION FÖR ATT SKICKA OMDÖME (Denna kopplas till formuläret)
+  //FUNKTION FÖR ATT SKICKA OMDÖME (Denna kopplas till formuläret)
   const submitRating = (e) => {
     e.preventDefault(); // Hindrar sidan från att laddas om
 
@@ -55,15 +57,16 @@ function ProductDetail() {
       .catch((err) => console.error("Kunde inte skicka betyg:", err));
   };
 
-  // 3. FUNKTION FÖR ATT LÄGGA I VARUKORG
+  //FUNKTION FÖR ATT LÄGGA I VARUKORG
   const addToCart = () => {
     fetch("http://localhost:5000/carts/1/addProduct", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId: id, amount: 1 }),
     }).then(() => {
-      setCartMessage("Tillagd i varukorgen! 🛒");
-      setTimeout(() => setCartMessage(""), 3000);
+      // Visar rutan när man har köpt en vara
+      setNotification("Varan lades till i varukorgen! 🛒");
+      setTimeout(() => setNotification(""), 3000);
     });
   };
 
@@ -71,6 +74,27 @@ function ProductDetail() {
 
   return (
     <div className="product-detail" style={{ padding: "20px" }}>
+      {/*NOTISEN när man har lagt en vara i varukorgen */}
+      {notification && (
+        <div
+          style={{
+            position: "fixed",
+            top: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#fad9ed",
+            color: "white",
+            padding: "15px 30px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+            zIndex: 1000,
+            fontWeight: "bold",
+          }}
+        >
+          {notification}
+        </div>
+      )}
+
       <Link to="/" className="back-link">
         ← Tillbaka till sortimentet
       </Link>
@@ -116,17 +140,6 @@ function ProductDetail() {
           <button className="buy-button" onClick={addToCart}>
             Lägg i varukorg 🛒
           </button>
-          {cartMessage && (
-            <p
-              style={{
-                color: "#fc4646",
-                marginTop: "10px",
-                fontWeight: "bold",
-              }}
-            >
-              {cartMessage}
-            </p>
-          )}
         </div>
       </div>
 
@@ -178,7 +191,7 @@ function ProductDetail() {
               }}
             />
           </div>
-          {/* VIKTIGT: type="submit" gör att onSubmit körs! */}
+
           <button
             type="submit"
             className="buy-button"
@@ -202,7 +215,7 @@ function ProductDetail() {
                   key={r.id}
                   className="rating-item"
                   style={{
-                    background: "#9c9696",
+                    background: "#fbebf3",
                     padding: "15px",
                     borderRadius: "5px",
                     marginBottom: "10px",
