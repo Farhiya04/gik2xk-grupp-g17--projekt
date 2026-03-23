@@ -9,6 +9,10 @@ function Admin() {
     imageUrl: "",
   });
 
+  // STATES FÖR ATT ÄNDRA PRIS
+  const [editingProductId, setEditingProductId] = useState(null);
+  const [editPrice, setEditPrice] = useState("");
+
   // INLOGGNINGS-STATE
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [password, setPassword] = useState("");
@@ -29,6 +33,7 @@ function Admin() {
       .then(setProducts);
   };
 
+  // SKAPA produkt (Create)
   const handleAdd = (e) => {
     e.preventDefault();
     fetch("http://localhost:5000/products", {
@@ -41,10 +46,26 @@ function Admin() {
     });
   };
 
+  // TA BORT produkt (Delete)
   const handleDelete = (id) => {
     fetch(`http://localhost:5000/products/${id}`, { method: "DELETE" }).then(
       fetchProducts,
     );
+  };
+
+  // UPPDATERA produkt (Update)
+  const handleUpdatePrice = (product) => {
+    // Vi bygger ihop produkten igen, men med det nya priset
+    const updatedProduct = { ...product, price: editPrice };
+
+    fetch(`http://localhost:5000/products/${product.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedProduct),
+    }).then(() => {
+      setEditingProductId(null); // Stäng redigeringsläget
+      fetchProducts(); // Ladda om listan med det nya priset
+    });
   };
 
   // Hantera inloggningsförsöket
@@ -62,20 +83,40 @@ function Admin() {
   // OM MAN INTE ÄR INLOGGAD, VISA INLOGGNINGSFORMULÄR
   if (!isLoggedIn) {
     return (
-      <div className="login-page">
+      <div
+        className="login-page"
+        style={{ textAlign: "center", padding: "50px" }}
+      >
         <h1>Admin Inloggning ⚙️</h1>
-        <form onSubmit={handleLogin} className="login-form">
+        <form
+          onSubmit={handleLogin}
+          className="login-form"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            maxWidth: "300px",
+            margin: "0 auto",
+            gap: "15px",
+          }}
+        >
           <input
             type="password"
             placeholder="Skriv in lösenord..."
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            style={{
+              padding: "10px",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+            }}
           />
           <button type="submit" className="buy-button">
             Logga in
           </button>
-          {loginError && <p className="error-message">{loginError}</p>}
+          {loginError && (
+            <p style={{ color: "red", fontWeight: "bold" }}>{loginError}</p>
+          )}
         </form>
       </div>
     );
@@ -83,26 +124,42 @@ function Admin() {
 
   // OM MAN ÄR INLOGGAD, VISA ADMIN-PANELEN
   return (
-    <div className="admin-page" style={{ padding: "20px" }}>
-      <h1>Admin-panel </h1>
-      <button
-        onClick={() => setIsLoggedIn(false)}
-        style={{ marginBottom: "20px" }}
+    <div
+      className="admin-page"
+      style={{ padding: "40px", maxWidth: "1000px", margin: "0 auto" }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "30px",
+        }}
       >
-        Logga ut
-      </button>
+        <h1>Admin-panel ⚙️</h1>
+        <button
+          onClick={() => setIsLoggedIn(false)}
+          className="buy-button"
+          style={{ background: "#666", width: "auto" }}
+        >
+          Logga ut
+        </button>
+      </div>
 
       <section
         className="add-product"
         style={{
-          background: "#eee",
+          background: "#f9f7f8",
           padding: "20px",
           borderRadius: "10px",
-          marginBottom: "30px",
+          marginBottom: "40px",
         }}
       >
         <h2>Lägg till ny dryck</h2>
-        <form onSubmit={handleAdd}>
+        <form
+          onSubmit={handleAdd}
+          style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}
+        >
           <input
             type="text"
             placeholder="Namn"
@@ -111,6 +168,11 @@ function Admin() {
               setNewProduct({ ...newProduct, title: e.target.value })
             }
             required
+            style={{
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+            }}
           />
           <input
             type="number"
@@ -120,6 +182,12 @@ function Admin() {
               setNewProduct({ ...newProduct, price: e.target.value })
             }
             required
+            style={{
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              width: "80px",
+            }}
           />
           <input
             type="text"
@@ -129,6 +197,11 @@ function Admin() {
               setNewProduct({ ...newProduct, imageUrl: e.target.value })
             }
             required
+            style={{
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+            }}
           />
           <textarea
             placeholder="Beskrivning"
@@ -137,37 +210,110 @@ function Admin() {
               setNewProduct({ ...newProduct, description: e.target.value })
             }
             required
+            style={{
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              minWidth: "200px",
+            }}
           />
-          <button type="submit" className="buy-button">
+          <button
+            type="submit"
+            className="buy-button"
+            style={{ width: "auto", padding: "0 20px" }}
+          >
             Spara produkt
           </button>
         </form>
       </section>
 
       <h2>Hantera befintliga produkter</h2>
-      <table className="cart-table">
+      <table
+        className="cart-table"
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          background: "white",
+        }}
+      >
         <thead>
-          <tr>
-            <th>Namn</th>
-            <th>Pris</th>
-            <th>Åtgärd</th>
+          <tr style={{ borderBottom: "2px solid #eee", textAlign: "left" }}>
+            <th style={{ padding: "15px" }}>Namn</th>
+            <th style={{ padding: "15px" }}>Pris</th>
+            <th style={{ padding: "15px" }}>Åtgärd</th>
           </tr>
         </thead>
         <tbody>
           {products.map((p) => (
-            <tr key={p.id}>
-              <td>{p.title}</td>
-              <td>{p.price} kr</td>
-              <td>
+            <tr key={p.id} style={{ borderBottom: "1px solid #eee" }}>
+              <td style={{ padding: "15px" }}>{p.title}</td>
+
+              {/* VÄXLA MELLAN ATT VISA PRISET ELLER INPUT-FÄLTET */}
+              <td style={{ padding: "15px" }}>
+                {editingProductId === p.id ? (
+                  <input
+                    type="number"
+                    value={editPrice}
+                    onChange={(e) => setEditPrice(e.target.value)}
+                    style={{
+                      padding: "5px",
+                      width: "60px",
+                      borderRadius: "4px",
+                      border: "1px solid #000",
+                    }}
+                  />
+                ) : (
+                  `${p.price} kr`
+                )}
+              </td>
+
+              <td style={{ padding: "15px", display: "flex", gap: "10px" }}>
+                {/* VÄXLA MELLAN SPARA- OCH ÄNDRA-KNAPP */}
+                {editingProductId === p.id ? (
+                  <button
+                    onClick={() => handleUpdatePrice(p)}
+                    style={{
+                      background: "#28a745", //färg för spara ändringar
+                      color: "white",
+                      border: "none",
+                      padding: "5px 15px",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Spara
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setEditingProductId(p.id);
+                      setEditPrice(p.price); // Fyll input-fältet med nuvarande pris
+                    }}
+                    style={{
+                      background: "#f39c12", // färg för ändra knappen
+                      color: "white",
+                      border: "none",
+                      padding: "5px 15px",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Ändra
+                  </button>
+                )}
+
                 <button
                   onClick={() => handleDelete(p.id)}
                   style={{
-                    background: "red",
+                    background: "#dc3545", // Röd färg
                     color: "white",
                     border: "none",
-                    padding: "5px 10px",
+                    padding: "5px 15px",
                     borderRadius: "4px",
                     cursor: "pointer",
+                    fontWeight: "bold",
                   }}
                 >
                   Ta bort

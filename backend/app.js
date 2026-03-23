@@ -12,6 +12,7 @@ const CartRow = require("./models/CartRow");
 
 // Skapa relationerna (Foreign Keys)
 //En användare kan ha många varukorgar
+// en som är aktiv just nu, och flera gamla som fungerar som kvitton på tidigare köp.
 User.hasMany(Cart);
 Cart.belongsTo(User);
 
@@ -45,7 +46,9 @@ const PORT = 5000;
 
 // Synkronisera databasen och starta servern
 sequelize
-  .sync({ force: false })
+  .sync({
+    alter: true,
+  })
   .then(() => {
     console.log(
       "Databasen är synkroniserad och alla tabeller/relationer är skapade!",

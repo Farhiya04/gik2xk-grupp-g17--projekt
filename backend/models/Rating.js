@@ -2,16 +2,17 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
 
 const Rating = sequelize.define(
-  "rating",
+  "Rating",
   {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
+    // Själva siffer-betyget (1-5)
     rating: {
       type: DataTypes.DOUBLE,
       allowNull: false,
+    },
+    // för Kommentarer
+    comment: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {

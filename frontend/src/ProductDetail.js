@@ -225,7 +225,7 @@ function ProductDetail() {
                   <div style={{ color: "#ffcc00", fontWeight: "bold" }}>
                     {"★".repeat(r.rating) + "☆".repeat(5 - r.rating)}
                   </div>
-                  <p style={{ color: "white", margin: "5px 0" }}>
+                  <p style={{ color: "#000", margin: "5px 0" }}>
                     "{r.comment}"
                   </p>
                   <small style={{ color: "#aaa" }}>
