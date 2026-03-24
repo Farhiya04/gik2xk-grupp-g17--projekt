@@ -54,19 +54,29 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE /products/:id - Ta bort en produkt
+// DELETE /products/:id - Ta bort en produkt och dess betyg
 router.delete("/:id", async (req, res) => {
   try {
-    const product = await Product.findByPk(req.params.id);
+    const productId = req.params.id;
+
+    // 1. TA BORT ALLA BETYG FÖRST
+    // Vi kollar i Rating-tabellen och tar bort allt som hör till denna produkt
+    await Rating.destroy({
+      where: { productId: productId },
+    });
+
+    // 2. TA BORT PRODUKTEN
+    const product = await Product.findByPk(productId);
+
     if (product) {
       await product.destroy();
-      res.json({ message: "Produkten är borttagen" });
+      res.json({ message: "Produkten och dess betyg är nu raderade!" });
     } else {
       res.status(404).json({ message: "Produkten hittades inte" });
     }
   } catch (error) {
+    console.error("DETTA GICK FEL:", error);
     res.status(500).json({ error: error.message });
   }
 });
-
 module.exports = router;

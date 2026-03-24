@@ -34,7 +34,7 @@ function ProductDetail() {
         ).toFixed(1)
       : 0;
 
-  //FUNKTION FÖR ATT SKICKA OMDÖME (Denna kopplas till formuläret)
+  //FUNKTION FÖR ATT SKICKA OMDÖME (kopplas till formuläret)
   const submitRating = (e) => {
     e.preventDefault(); // Hindrar sidan från att laddas om
 

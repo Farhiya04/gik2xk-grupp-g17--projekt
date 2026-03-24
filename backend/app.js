@@ -47,7 +47,7 @@ const PORT = 5000;
 // Synkronisera databasen och starta servern
 sequelize
   .sync({
-    alter: true,
+    force: false,
   })
   .then(() => {
     console.log(
